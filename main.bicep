@@ -46,8 +46,8 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2023-12-01' = {
   name: hostingPlanName
   location: location
   sku: {
-    name: 'FlexConsumption'
-    tier: 'FC1'
+    tier: 'FlexConsumption'
+    name: 'FC1'
   }
   properties: {}
 }
