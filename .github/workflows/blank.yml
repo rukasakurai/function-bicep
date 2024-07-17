@@ -34,3 +34,18 @@ jobs:
         run: |
           echo Add other actions to build,
           echo test, and deploy your project.
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Azure CLI
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy Bicep file
+        run: |
+          az deployment group create \
+            --resource-group rg-temptemptemp \
+            --template-file main.bicep \
+            --parameters functionAppName=func-temptemptemp storageAccountName=sttemptemptemp
