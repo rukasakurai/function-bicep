@@ -16,18 +16,11 @@ param location string = resourceGroup().location
 param appInsightsLocation string = resourceGroup().location
 
 @description('The language worker runtime to load in the function app.')
-@allowed([
-  'node'
-  'dotnet'
-  'java'
-])
-param runtime string = 'node'
 
 var functionAppName = appName
 var hostingPlanName = appName
 var applicationInsightsName = appName
-var storageAccountName = '${uniqueString(resourceGroup().id)}azfunctions'
-var functionWorkerRuntime = runtime
+var storageAccountName = 'st${uniqueString(resourceGroup().id)}'
 
 var containers = [{name: 'deploymentStorageContainerName'}]
 
