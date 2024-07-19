@@ -1,5 +1,5 @@
 @description('The name of the function app that you wish to create.')
-param appName string = 'fnapp${uniqueString(resourceGroup().id)}'
+param appName string = 'fnapptemptemptemp'
 
 @description('Storage Account type')
 @allowed([
@@ -20,7 +20,7 @@ param appInsightsLocation string = resourceGroup().location
 var functionAppName = appName
 var hostingPlanName = appName
 var applicationInsightsName = appName
-var storageAccountName = 'st${uniqueString(resourceGroup().id)}'
+var storageAccountName = 'sttemptemptempname'
 
 var containers = [{name: 'deploymentStorageContainerName'}]
 
