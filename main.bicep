@@ -22,7 +22,7 @@ var hostingPlanName = appName
 var applicationInsightsName = appName
 var storageAccountName = 'sttemptemptempname'
 
-var containers = [{name: 'deploymentStorageContainerName'}]
+var containers = [{name: 'deploymentstoragecontainername'}]
 
 var deleteRetentionPolicy = {}
 
