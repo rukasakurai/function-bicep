@@ -29,7 +29,11 @@ var applicationInsightsName = appName
 var storageAccountName = '${uniqueString(resourceGroup().id)}azfunctions'
 var functionWorkerRuntime = runtime
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
+var containers = [{name: 'deploymentStorageContainerName'}]
+
+var deleteRetentionPolicy = {}
+
+resource storage 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   name: storageAccountName
   location: location
   sku: {
@@ -40,16 +44,32 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
     supportsHttpsTrafficOnly: true
     defaultToOAuthAuthentication: true
   }
+
+  resource blobServices 'blobServices' = if (!empty(containers)) {
+    name: 'default'
+    properties: {
+      deleteRetentionPolicy: deleteRetentionPolicy
+    }
+    resource container 'containers' = [for container in containers: {
+      name: container.name
+      properties: {
+        publicAccess: 'None'
+      }
+    }]
+  }
 }
 
 resource hostingPlan 'Microsoft.Web/serverfarms@2023-12-01' = {
   name: hostingPlanName
   location: location
+  kind: 'functionapp'
   sku: {
     tier: 'FlexConsumption'
     name: 'FC1'
   }
-  properties: {}
+  properties: {
+    reserved: true
+  }
 }
 
 resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
@@ -96,6 +116,25 @@ resource functionApp 'Microsoft.Web/sites@2023-12-01' = {
       minTlsVersion: '1.2'
     }
     httpsOnly: true
+    functionAppConfig: {
+      deployment: {
+        storage: {
+          type: 'blobContainer'
+          value: '${storage.properties.primaryEndpoints.blob}deploymentStorageContainerName'
+          authentication: {
+            type: 'SystemAssignedIdentity'
+          }
+        }
+      }
+      scaleAndConcurrency: {
+        maximumInstanceCount: 100
+        instanceMemoryMB: 2048
+      }
+      runtime: { 
+        name: 'dotnet-isolated'
+        version: '8.0'
+      }
+    }
   }
 }
 
